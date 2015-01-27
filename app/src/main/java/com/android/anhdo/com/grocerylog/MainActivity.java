@@ -1,9 +1,14 @@
 package com.android.anhdo.com.grocerylog;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -12,6 +17,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
+        integrator.initiateScan();
     }
 
 
@@ -35,5 +43,15 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (result != null) {
+            String contents = result.getContents();
+            Toast.makeText(MainActivity.this, contents, Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, result.getFormatName(), Toast.LENGTH_LONG).show();
+        }
     }
 }
